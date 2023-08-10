@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace ApiHost
+namespace ApiHost.Service
 {
     public class StartUp
     {

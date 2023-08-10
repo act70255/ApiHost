@@ -1,6 +1,8 @@
-﻿using Microsoft.Owin.Hosting;
+﻿using ApiHost.Service;
+using Microsoft.Owin.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -12,20 +14,41 @@ namespace ApiHost
     {
         static void Main(string[] args)
         {
-            string baseAddress = "http://localhost:9000/";
-
-            // Start OWIN host 
-            using (WebApp.Start<StartUp>(url: baseAddress))
+            string hostAddress = "http://localhost:9000/";
+            HostProvider apiServer = null;
+            var command = Console.ReadLine();
+            while(command != "exit")
             {
-                #region Testing...
-                HttpClient client = new HttpClient();
-
-                var response = client.GetAsync(baseAddress + "api/Breath/Get").Result;
-
-                Console.WriteLine(response);
-                Console.WriteLine(response.Content.ReadAsStringAsync().Result);
-                Console.ReadLine(); 
-                #endregion
+                switch (command)
+                {
+                    case "start":
+                        {
+                            if (apiServer == null)
+                            {
+                                apiServer = new HostProvider(hostAddress);
+                                apiServer.HostStatusChanged += (s, e) =>
+                                {
+                                    Debug.WriteLine($"HostStatusChanged {e} {DateTime.Now}");
+                                };
+                            }
+                            apiServer.Start();
+                            break;
+                        }
+                    case "stop":
+                        {
+                            if(apiServer == null)
+                                return;
+                            apiServer.Stop();
+                            GC.Collect();
+                            break;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("UnHandeled command");
+                            break;
+                        }
+                }
+                command = Console.ReadLine();
             }
         }
     }
