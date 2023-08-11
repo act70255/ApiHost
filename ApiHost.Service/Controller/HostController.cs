@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace ApiHost.Service.Controller
+namespace ApiHost.Host.Controller
 {
     public class HostController : ApiController
     {
@@ -18,6 +18,12 @@ namespace ApiHost.Service.Controller
         public IHttpActionResult HostTime()
         {
             return Json(new { HostTime = DateTime.Now });
+        }
+        [HttpPost]
+        public IHttpActionResult Data([FromBody] dynamic queyr)
+        {
+            Console.WriteLine($"[{DateTime.Now} Data] {Newtonsoft.Json.JsonConvert.SerializeObject(queyr)}");
+            return Ok();
         }
     }
 }

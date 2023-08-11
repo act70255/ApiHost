@@ -7,8 +7,8 @@
     <ProjectGuid>{617A4096-BB03-4323-8BFB-21C8B87A1393}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ApiHost.Service</RootNamespace>
-    <AssemblyName>ApiHost.Service</AssemblyName>
+    <RootNamespace>ApiHost.Host</RootNamespace>
+    <AssemblyName>ApiHost.Host</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -1,4 +1,4 @@
-﻿using ApiHost.Service;
+﻿using ApiHost.Host;
 using Microsoft.Owin.Hosting;
 using System;
 using System.Collections.Generic;
@@ -8,38 +8,28 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost
+namespace ApiHost.CLI
 {
     internal class Program
     {
+        static HostProvider apiServer = null;
         static void Main(string[] args)
         {
-            string hostAddress = "http://localhost:9000/";
-            HostProvider apiServer = null;
+            string HostAddress = "http://localhost:9000/";
+            StartServer();
             var command = Console.ReadLine();
-            while(command != "exit")
+            while (command != "exit")
             {
                 switch (command)
                 {
                     case "start":
                         {
-                            if (apiServer == null)
-                            {
-                                apiServer = new HostProvider(hostAddress);
-                                apiServer.HostStatusChanged += (s, e) =>
-                                {
-                                    Debug.WriteLine($"HostStatusChanged {e} {DateTime.Now}");
-                                };
-                            }
-                            apiServer.Start();
+                            StartServer();
                             break;
                         }
                     case "stop":
                         {
-                            if(apiServer == null)
-                                return;
-                            apiServer.Stop();
-                            GC.Collect();
+                            StopServer();
                             break;
                         }
                     default:
@@ -49,6 +39,26 @@ namespace ApiHost
                         }
                 }
                 command = Console.ReadLine();
+            }
+
+            void StartServer()
+            {
+                if (apiServer == null)
+                {
+                    apiServer = new HostProvider(HostAddress);
+                    apiServer.HostStatusChanged += (s, e) =>
+                    {
+                        Debug.WriteLine($"HostStatusChanged {e} {DateTime.Now}");
+                    };
+                }
+                apiServer.Start();
+            }
+            void StopServer()
+            {
+                if (apiServer == null)
+                    return;
+                apiServer.Stop();
+                GC.Collect();
             }
         }
     }

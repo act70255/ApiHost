@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33927.249
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost", "ApiHost\ApiHost.csproj", "{2A838128-A306-4B60-9CED-2821187F7A0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost.CLI", "ApiHost.CLI\ApiHost.CLI.csproj", "{2A838128-A306-4B60-9CED-2821187F7A0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost.Service", "ApiHost.Service\ApiHost.Service.csproj", "{617A4096-BB03-4323-8BFB-21C8B87A1393}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost.Host", "ApiHost.Service\ApiHost.Host.csproj", "{617A4096-BB03-4323-8BFB-21C8B87A1393}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiHost.Forms", "ApiHost.Forms\ApiHost.Forms.csproj", "{07F1D4FB-7653-4499-81E1-CC44A74531AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{617A4096-BB03-4323-8BFB-21C8B87A1393}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{617A4096-BB03-4323-8BFB-21C8B87A1393}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{617A4096-BB03-4323-8BFB-21C8B87A1393}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07F1D4FB-7653-4499-81E1-CC44A74531AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07F1D4FB-7653-4499-81E1-CC44A74531AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07F1D4FB-7653-4499-81E1-CC44A74531AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07F1D4FB-7653-4499-81E1-CC44A74531AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

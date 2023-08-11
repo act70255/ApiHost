@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2A838128-A306-4B60-9CED-2821187F7A0A}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ApiHost</RootNamespace>
-    <AssemblyName>ApiHost</AssemblyName>
+    <RootNamespace>ApiHost.CLI</RootNamespace>
+    <AssemblyName>ApiHost.CLI</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -67,6 +67,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\ConsoleController.cs" />
+    <Compile Include="Model\MonitorModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -75,9 +77,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ApiHost.Service\ApiHost.Service.csproj">
+    <ProjectReference Include="..\ApiHost.Service\ApiHost.Host.csproj">
       <Project>{617a4096-bb03-4323-8bfb-21c8b87a1393}</Project>
-      <Name>ApiHost.Service</Name>
+      <Name>ApiHost.Host</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
