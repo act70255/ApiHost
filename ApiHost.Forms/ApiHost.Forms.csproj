@@ -134,6 +134,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApiHost.CLI\ApiHost.CLI.csproj">
+      <Project>{2a838128-a306-4b60-9ced-2821187f7a0a}</Project>
+      <Name>ApiHost.CLI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ApiHost.Service\ApiHost.Host.csproj">
       <Project>{617a4096-bb03-4323-8bfb-21c8b87a1393}</Project>
       <Name>ApiHost.Host</Name>

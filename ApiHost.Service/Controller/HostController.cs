@@ -17,7 +17,7 @@ namespace ApiHost.Host.Controller
         [HttpGet]
         public IHttpActionResult HostTime()
         {
-            return Json(new { HostTime = DateTime.Now });
+            return Json(new { CurrentTime = DateTime.Now });
         }
         [HttpPost]
         public IHttpActionResult Data([FromBody] dynamic queyr)

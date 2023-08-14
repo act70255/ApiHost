@@ -27,8 +27,9 @@ namespace ApiHost.Host
             {
                 // Start OWIN host 
                 _server = WebApp.Start<StartUp>(HostAddress);
+                
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync(HostAddress + "api/Host/HostTime").Result;
+                var response = client.GetAsync($"{HostAddress}api/Host/HostTime").Result;
                 Console.WriteLine(response);
                 HostStatusChanged?.Invoke(this, HostStatus.HostStarted);
             }
