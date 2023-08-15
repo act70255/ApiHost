@@ -2,6 +2,7 @@
 using Microsoft.Owin.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -12,10 +13,23 @@ namespace ApiHost.CLI
 {
     internal class Program
     {
+        string Port()
+        {
+            return ConfigurationSettings.AppSettings["HostPort"];
+        }
+        string IPAddress()
+        {
+            return ConfigurationSettings.AppSettings["HostIP"];
+        }
+        string HostAddress()
+        {
+            return $"{IPAddress()}:{Port()}/";
+        }
         static HostProvider apiServer = null;
         static void Main(string[] args)
         {
-            string HostAddress = "http://localhost:9000/";
+            string HostAddress = HostAddress();
+
             StartServer();
             var command = Console.ReadLine();
             while (command != "exit")
@@ -45,6 +59,7 @@ namespace ApiHost.CLI
             {
                 if (apiServer == null)
                 {
+                    Console.WriteLine($"Starting server at {HostAddress}");
                     apiServer = new HostProvider(HostAddress);
                     apiServer.HostStatusChanged += (s, e) =>
                     {

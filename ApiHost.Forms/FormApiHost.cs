@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,50 +16,123 @@ namespace ApiHost.Forms
 {
     public partial class FormApiHost : Form
     {
-        List<Process> ProcessList = new List<Process>();
-        //private static readonly Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        //Get config from app.config
+        List<Process> ProcessList { get; set; } = new List<Process>();
 
-        Label label;
+        string Port()
+        {
+            return ConfigurationSettings.AppSettings["HostPort"];
+        }
+        string IPAddress()
+        {
+            return ConfigurationSettings.AppSettings["HostIP"];
+        }
+        string HostAddress()
+        {
+            return $"{IPAddress()}:{Port()}/";
+        }
+
+        IEnumerable<string> GetProcessPathFromConfig()
+        {
+            var keys = ConfigurationManager.AppSettings.Keys;
+            foreach(var each in keys.Cast<object>().Where(f => f.ToString().StartsWith("ExecPath")).Select(s => ConfigurationManager.AppSettings.Get(s.ToString())))
+            {
+                yield return each;
+            }
+        }
+
+        TextBox txtConsole;
         Button btnStart;
         Button btnStop;
+        //Button btnLog;
 
         public FormApiHost()
         {
             InitializeComponent();
 
-            label = new Label()
+            btnStart = new Button()
+            {
+                BackColor = Color.Black,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Text = "Start",
+                AutoSize = true,
+                Location = new Point(0, 0),
+            };
+            btnStop = new Button()
+            {
+                BackColor = Color.Black,
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Text = "Stop",
+                AutoSize = true,
+                Location = new Point(btnStart.Right, 0),
+                Enabled = false,
+            };
+            txtConsole = new TextBox()
             {
                 BackColor = Color.Black,
                 ForeColor = Color.White,
                 AutoSize = true,
+                Multiline = true,
+                Size = new Size(500, 0),
+                ScrollBars = ScrollBars.Horizontal,
+                Location = new Point(0, btnStart.Bottom),
             };
-            btnStart = new Button()
+            //btnLog = new Button()
+            //{
+            //    Text = "Log",
+            //    AutoSize = true,
+            //    Location = new Point(btnStop.Right, label.Height),
+            //};
+
+            txtConsole.TextChanged += (s, e) =>
             {
-                Text = "Start",
-                AutoSize = true,
-                Location = new Point(0, label.Height),
+                if (txtConsole.Lines.Length > 40)
+                {
+                    var contentText = txtConsole.Text;
+                    int firstCharIndex = contentText.IndexOf(Environment.NewLine);
+                    if (firstCharIndex >= 0)
+                    {
+                        string remainingText = txtConsole.Text.Substring(firstCharIndex+1, txtConsole.Text.Length - firstCharIndex-1);
+                        txtConsole.Text = remainingText;
+                    }
+                }
+                int newHeight = txtConsole.GetLineFromCharIndex(txtConsole.TextLength - 1) * txtConsole.Font.Height;
+                txtConsole.Height = newHeight;
             };
-            btnStop = new Button()
+
+            txtConsole.GotFocus += (s, e) =>
             {
-                Text = "Stop",
-                AutoSize = true,
-                Location = new Point(btnStart.Width, label.Height),
-                Enabled = false,
+                txtConsole.DeselectAll();
             };
-            Controls.Add(label);
 
             btnStart.Click += (s, e) =>
             {
                 Task.Run(() =>
                 {
                     StopAllProcess();
-                    Execute("C:\\Users\\James.lin\\source\\repos\\ApiHost\\ApiHost.CLI\\bin\\Debug\\ApiHost.CLI.exe", "",
+                    //Execute("C:\\Users\\James.lin\\source\\repos\\ApiHost\\ApiHost.Forms\\bin\\Debug\\ApiHost.CLI.exe", "",
+                    //    (data) =>
+                    //    {
+                    //        label.BeginInvoke(new Action(() =>
+                    //        {
+                    //            label.Text = data;
+                    //        }));
+                    //        Debug.WriteLine(data);
+                    //    },
+                    //    (error) =>
+                    //    {
+                    //        Debug.WriteLine(error);
+                    //    });
+
+                    foreach (var each in GetProcessPathFromConfig())
+                    {
+                        Execute(each, HostAddress(),
                         (data) =>
                         {
-                            label.BeginInvoke(new Action(() =>
+                            txtConsole.BeginInvoke(new Action(() =>
                             {
-                                label.Text = data;
+                                txtConsole.Text += $"{Environment.NewLine}{data}";
                             }));
                             Debug.WriteLine(data);
                         },
@@ -65,6 +140,7 @@ namespace ApiHost.Forms
                         {
                             Debug.WriteLine(error);
                         });
+                    }
                 });
                 btnStart.Enabled = false;
                 btnStop.Enabled = true;
@@ -77,8 +153,19 @@ namespace ApiHost.Forms
                 btnStop.Enabled = false;
             };
 
-            this.Controls.Add(btnStart);
-            this.Controls.Add(btnStop);
+            //btnLog.Click+=(s, e) =>
+            //{
+            //    foreach (var each in ProcessList.Where(f => !f.HasExited))
+            //    {
+            //        var fileName = each.StartInfo.FileName;
+            //        var content = each.StandardOutput.ReadToEnd();
+            //        System.IO.File.WriteAllText($"{fileName}__{DateTime.Now.ToShortTimeString()}.log", content);
+            //    }
+            //};
+
+            Controls.Add(txtConsole);
+            Controls.Add(btnStart);
+            Controls.Add(btnStop);
 
             FormClosing += (s, e) =>
             {
@@ -91,38 +178,34 @@ namespace ApiHost.Forms
             StopAllProcess();
         }
 
-        void StartServer()
-        {
-            string Port()
-            {
-                return System.Configuration.ConfigurationSettings.AppSettings["HostPort"];
-            }
-            string IPAddress()
-            {
-                return System.Configuration.ConfigurationSettings.AppSettings["HostIP"];
-            }
-
-            var hostAddress = $"{IPAddress()}:{Port()}";
-            var label = this.Controls.Find("label", true).FirstOrDefault() as System.Windows.Forms.Label;
-            HostProvider apiServer = null;
-            apiServer = new HostProvider(hostAddress);
-            apiServer.HostStatusChanged += (s, e) =>
-            {
-                label.Invoke(new Action(() =>
-                {
-                    label.Text = $"HostStatusChanged {e} {DateTime.Now}";
-                }));
-            };
-
-        }
+        //void StartServer()
+        //{
+        //    var label = this.Controls.Find("label", true).FirstOrDefault() as System.Windows.Forms.Label;
+        //    HostProvider apiServer = null;
+        //    apiServer = new HostProvider(HostAddress());
+        //    apiServer.HostStatusChanged += (s, e) =>
+        //    {
+        //        label.Invoke(new Action(() =>
+        //        {
+        //            label.Text = $"HostStatusChanged {e} {DateTime.Now}";
+        //        }));
+        //    };
+        //}
 
         void StopAllProcess()
         {
             ProcessList.ForEach(p =>
             {
-                p.Kill();
+                try
+                {
+                    p.Kill();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             });
-            ProcessList.RemoveAll(p => p.HasExited);
+            ProcessList.Clear();
         }
 
         int Execute(string exeFile, string argument = "", Action<string> outputCallback = null, Action<string> errorCallback = null)

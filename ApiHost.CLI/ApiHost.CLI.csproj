@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\ConsoleController.cs" />
+    <Compile Include="Controller\postController.cs" />
     <Compile Include="Model\MonitorModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
