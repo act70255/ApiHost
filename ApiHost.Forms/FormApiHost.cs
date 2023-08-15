@@ -43,7 +43,6 @@ namespace ApiHost.Forms
         TextBox txtConsole;
         Button btnStart;
         Button btnStop;
-        //Button btnLog;
 
         public FormApiHost()
         {
@@ -78,12 +77,6 @@ namespace ApiHost.Forms
                 ScrollBars = ScrollBars.Horizontal,
                 Location = new Point(0, btnStart.Bottom),
             };
-            //btnLog = new Button()
-            //{
-            //    Text = "Log",
-            //    AutoSize = true,
-            //    Location = new Point(btnStop.Right, label.Height),
-            //};
 
             txtConsole.TextChanged += (s, e) =>
             {
@@ -111,19 +104,6 @@ namespace ApiHost.Forms
                 Task.Run(() =>
                 {
                     StopAllProcess();
-                    //Execute("C:\\Users\\James.lin\\source\\repos\\ApiHost\\ApiHost.Forms\\bin\\Debug\\ApiHost.CLI.exe", "",
-                    //    (data) =>
-                    //    {
-                    //        label.BeginInvoke(new Action(() =>
-                    //        {
-                    //            label.Text = data;
-                    //        }));
-                    //        Debug.WriteLine(data);
-                    //    },
-                    //    (error) =>
-                    //    {
-                    //        Debug.WriteLine(error);
-                    //    });
 
                     foreach (var each in GetProcessPathFromConfig())
                     {
@@ -152,16 +132,6 @@ namespace ApiHost.Forms
                 btnStart.Enabled = true;
                 btnStop.Enabled = false;
             };
-
-            //btnLog.Click+=(s, e) =>
-            //{
-            //    foreach (var each in ProcessList.Where(f => !f.HasExited))
-            //    {
-            //        var fileName = each.StartInfo.FileName;
-            //        var content = each.StandardOutput.ReadToEnd();
-            //        System.IO.File.WriteAllText($"{fileName}__{DateTime.Now.ToShortTimeString()}.log", content);
-            //    }
-            //};
 
             Controls.Add(txtConsole);
             Controls.Add(btnStart);

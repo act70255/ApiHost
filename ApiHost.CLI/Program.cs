@@ -13,22 +13,19 @@ namespace ApiHost.CLI
 {
     internal class Program
     {
-        string Port()
-        {
-            return ConfigurationSettings.AppSettings["HostPort"];
-        }
-        string IPAddress()
-        {
-            return ConfigurationSettings.AppSettings["HostIP"];
-        }
-        string HostAddress()
-        {
-            return $"{IPAddress()}:{Port()}/";
-        }
         static HostProvider apiServer = null;
         static void Main(string[] args)
         {
-            string HostAddress = HostAddress();
+            string Port()
+            {
+                return ConfigurationSettings.AppSettings["HostPort"];
+            }
+            string IPAddress()
+            {
+                return ConfigurationSettings.AppSettings["HostIP"];
+            }
+
+            string HostAddress = $"{IPAddress()}:{Port()}/";
 
             StartServer();
             var command = Console.ReadLine();
