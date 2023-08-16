@@ -1,5 +1,6 @@
 ﻿using ApiHost.Host;
 using Microsoft.Owin.Hosting;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -13,7 +14,7 @@ namespace ApiHost.CLI
 {
     internal class Program
     {
-        static HostProvider apiServer = null;
+        static ApiServer apiServer = null;
         static void Main(string[] args)
         {
             string Port()
@@ -26,6 +27,10 @@ namespace ApiHost.CLI
             }
 
             string HostAddress = $"{IPAddress()}:{Port()}/";
+            HostMessaging.Instance.DataReceived+= (s, e) =>
+            {
+                Console.WriteLine($"DataReceived [{e.Item1}/{e.Item2}] {JsonConvert.SerializeObject(e.Item3)}");
+            };
 
             StartServer();
             var command = Console.ReadLine();
@@ -56,12 +61,11 @@ namespace ApiHost.CLI
             {
                 if (apiServer == null)
                 {
-                    Console.WriteLine($"Starting server at {HostAddress}");
-                    apiServer = new HostProvider(HostAddress);
-                    apiServer.HostStatusChanged += (s, e) =>
-                    {
-                        Debug.WriteLine($"HostStatusChanged {e} {DateTime.Now}");
-                    };
+                    apiServer = new ApiServer(HostAddress);
+                    apiServer.DataReceived += (s, e) =>
+                        {
+                            Console.WriteLine($"DataReceived [{e.Item1}/{e.Item2}] {JsonConvert.SerializeObject(e.Item3)}");
+                        };
                 }
                 apiServer.Start();
             }
@@ -70,6 +74,7 @@ namespace ApiHost.CLI
                 if (apiServer == null)
                     return;
                 apiServer.Stop();
+                apiServer = null;
                 GC.Collect();
             }
         }

@@ -29,7 +29,8 @@ namespace ApiHost.Host
                 _server = WebApp.Start<StartUp>(HostAddress);
                 
                 HttpClient client = new HttpClient();
-                var response = client.GetAsync($"{HostAddress}api/Host/HostTime").Result;
+                var response = client.PostAsJsonAsync<object>($"{HostAddress}api/Host/Data", new { Instance = "StartTest", Time = DateTime.Now }).GetAwaiter().GetResult();
+
                 Console.WriteLine(response);
                 HostStatusChanged?.Invoke(this, HostStatus.HostStarted);
             }

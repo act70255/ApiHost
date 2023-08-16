@@ -20,7 +20,7 @@ namespace ApiHost.Host
                 routeTemplate: "api/{controller}/{action}",
                 defaults: new { id = RouteParameter.Optional }
             );
-            config.EnableCors(new EnableCorsAttribute("*", "*", "GET, POST, OPTIONS, PUT, DELETE"));
+            config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
             appBuilder.UseWebApi(config);
         }
     }

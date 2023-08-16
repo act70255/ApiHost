@@ -5,23 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 
-namespace ApiHost.Host.Controller
+namespace ApiHost.Spider.Controller
 {
-    public class HostController : ApiController
+    public class postController : ApiController
     {
-        [HttpGet]
-        public IHttpActionResult MachineName()
+        [HostMessaging()]
+        [HttpPost]
+        public IHttpActionResult log([FromBody] dynamic queyr)
         {
-            return Json(new { HostName = Environment.MachineName });
+            if (!string.IsNullOrEmpty(queyr) && queyr != "POSTnull")
+            {
+            }
+            return Ok();
         }
-
-        [HttpGet]
-        public IHttpActionResult HostTime()
-        {
-            return Json(new { CurrentTime = DateTime.Now });
-        }
-
         [HttpPost]
         public IHttpActionResult Data([FromBody] dynamic queyr)
         {
