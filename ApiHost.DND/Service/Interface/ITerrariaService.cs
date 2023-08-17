@@ -12,6 +12,5 @@ namespace ApiHost.DND.Service.Interface
     {
         List<Creature> GetCreatures();
         Creature AddCreature(CreatureRequest request);
-        Creature Action(int skill, int name, int target);
     }
 }

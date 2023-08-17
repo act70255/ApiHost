@@ -16,12 +16,14 @@ namespace ApiHost.DND.Controller
     {
         ILogger _logger;
         ITerrariaService _terriarService;
+        ICreatureService _creatureService;
         IMapper _mapper;
 
-        public DNDController(ILogger logger, ITerrariaService terriarService, IMapper mapper)
+        public DNDController(ILogger logger, ITerrariaService terriarService, ICreatureService creatureService, IMapper mapper)
         {
             _logger = logger;
             _terriarService = terriarService;
+            _creatureService = creatureService;
             _mapper = mapper;
         }
         [HttpPost]
@@ -52,7 +54,7 @@ namespace ApiHost.DND.Controller
         [HttpPost]
         public IHttpActionResult Action(ActionRequest request)
         {
-            var result = _terriarService.Action(request.skill, request.source, request.target);
+            var result = _creatureService.Action(request.skill, request.source, request.target);
             var response = _mapper.Map<CreatureRequest>(result);
             return Json(response);
         }
@@ -61,6 +63,15 @@ namespace ApiHost.DND.Controller
         public IHttpActionResult GetSkills(SkillsRequest request)
         {
             if (request != null && request.ids.Any())
+                return Json(SkillPool.Instance.Skills.Where(x => request.ids.Contains(x.ID)));
+            else
+                return Json(SkillPool.Instance.Skills);
+        }
+
+        [HttpPost]
+        public IHttpActionResult AddSKills(SkillsRequest request)
+        {
+            if (request == null || !request.ids.Any())
                 return Json(SkillPool.Instance.Skills.Where(x => request.ids.Contains(x.ID)));
             else
                 return Json(SkillPool.Instance.Skills);

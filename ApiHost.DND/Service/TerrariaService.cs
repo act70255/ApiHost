@@ -32,17 +32,5 @@ namespace ApiHost.DND.Service
             Terraria.Instance.NewCreature(creature);
             return creature;
         }
-
-        public Creature Action(int skill, int source, int target)
-        {
-            var sourceCreature = Terraria.Instance.Creatures.FirstOrDefault(x => x.ID == source);
-            var targetCreature = Terraria.Instance.Creatures.FirstOrDefault(x => x.ID == target);
-            var effectSkill = SkillPool.Instance.Skills.FirstOrDefault(x => x.ID == skill);
-            if (sourceCreature == null || targetCreature == null || effectSkill == null)
-            {
-                return null;
-            }
-            return targetCreature;
-        }
     }
 }

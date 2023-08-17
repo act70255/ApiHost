@@ -15,6 +15,7 @@ namespace ApiHost.DND.Controller
     }
     public class SkillsRequest : BaseMessageContent
     {
+        public int id { get; set; }
         public List<int> ids { get; set; }
     }
 

@@ -23,18 +23,18 @@ namespace ApiHost.DND.Service
                 source.Experience.Value = 0;
             }
         }
-        //public Creature Action(ActionType actionType, Creature source, Creature target)
-        //{
-        //    switch (actionType)
-        //    {
-        //        case ActionType.Attack:
-        //            return Attack(source,target);
-        //        case ActionType.Heal:
-        //            return Heal(source,target);
-        //        default:
-        //            return target;
-        //    }
-        //}
+
+        public Creature Action(int skill, int source, int target)
+        {
+            var sourceCreature = Terraria.Instance.Creatures.FirstOrDefault(x => x.ID == source);
+            var targetCreature = Terraria.Instance.Creatures.FirstOrDefault(x => x.ID == target);
+            var effectSkill = SkillPool.Instance.Skills.FirstOrDefault(x => x.ID == skill);
+            if (sourceCreature == null || targetCreature == null || effectSkill == null)
+            {
+
+            }
+            return targetCreature;
+        }
 
         public Creature Spell(Skill skill, Creature source, Creature target)
         {
