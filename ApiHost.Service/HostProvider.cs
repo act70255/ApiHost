@@ -21,12 +21,12 @@ namespace ApiHost.Host
             HostAddress = hostAddress;
         }
 
-        public void Start()
+        public void Start<TStartUp>()
         {
             try
             {
                 // Start OWIN host 
-                _server = WebApp.Start<StartUp>(HostAddress);
+                _server = WebApp.Start<TStartUp>(HostAddress);
                 
                 HttpClient client = new HttpClient();
                 var response = client.PostAsJsonAsync<object>($"{HostAddress}api/Host/Data", new { Instance = "StartTest", Time = DateTime.Now }).GetAwaiter().GetResult();

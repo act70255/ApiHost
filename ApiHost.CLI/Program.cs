@@ -67,7 +67,7 @@ namespace ApiHost.CLI
                             Console.WriteLine($"DataReceived [{e.Item1}/{e.Item2}] {JsonConvert.SerializeObject(e.Item3)}");
                         };
                 }
-                apiServer.Start();
+                apiServer.Start<ApiHost.Host.StartUp>();
             }
             void StopServer()
             {

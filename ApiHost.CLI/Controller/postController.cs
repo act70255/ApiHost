@@ -11,12 +11,9 @@ namespace ApiHost.CLI.Controller
 {
     public class postController : ApiController
     {
-        [HostMessaging(new object[] { "POSTnull" })]
         [HttpPost]
         public IHttpActionResult log([FromBody] dynamic queyr)
         {
-            if (!string.IsNullOrEmpty(queyr) && queyr != "POSTnull")
-                Console.WriteLine($"[{DateTime.Now} log] {Newtonsoft.Json.JsonConvert.SerializeObject(queyr)}");
             return Ok();
         }
         [HttpPost]

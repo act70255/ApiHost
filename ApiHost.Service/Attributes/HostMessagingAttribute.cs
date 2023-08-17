@@ -24,7 +24,7 @@ namespace ApiHost.Host.Attributes
         public HostMessagingAttribute()
         { }
 
-        public HostMessagingAttribute(object[] ignoreParams)
+        public HostMessagingAttribute(params object[] ignoreParams)
         {
             IgnoreParams = ignoreParams;
         }

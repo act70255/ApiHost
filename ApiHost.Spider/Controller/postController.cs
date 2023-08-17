@@ -11,13 +11,10 @@ namespace ApiHost.Spider.Controller
 {
     public class postController : ApiController
     {
-        [HostMessaging()]
+        [HostMessaging("POSTnull",null,"")]
         [HttpPost]
         public IHttpActionResult log([FromBody] dynamic queyr)
         {
-            if (!string.IsNullOrEmpty(queyr) && queyr != "POSTnull")
-            {
-            }
             return Ok();
         }
         [HttpPost]

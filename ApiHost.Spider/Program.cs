@@ -28,14 +28,14 @@ namespace ApiHost.Spider
             string Port() => ConfigurationSettings.AppSettings["HostPort"];
             string IPAddress() => ConfigurationSettings.AppSettings["HostIP"];
             string HostAddress() => $"{IPAddress()}:{Port()}/";
-            
+
             HostMessaging.Instance.DataReceived += (s, e) =>
             {
-                Console.WriteLine($"DataReceived [{e.Item1}/{e.Item2}] {JsonConvert.SerializeObject(e.Item3)}");
+                Console.WriteLine($"DataReceived {DateTime.Now.ToString("MM/dd HH:mm")} [{e.Item1}/{e.Item2}] {JsonConvert.SerializeObject(e.Item3)}");
             };
             new StartUp();
         }
-        
+
         public class StartUp
         {
             #region Members
@@ -61,29 +61,6 @@ namespace ApiHost.Spider
                 ReStartNetProcess();
 
                 var command = Console.ReadLine();
-                while (command != "exit")
-                {
-                    switch (command)
-                    {
-                        case "start":
-                            {
-                                if (apiServer?.HostStatus != Host.HostStatus.HostStarted)
-                                    apiServer.Start();
-                                break;
-                            }
-                        case "stop":
-                            {
-                                apiServer.Stop();
-                                break;
-                            }
-                        default:
-                            {
-                                Console.WriteLine("UnHandeled command");
-                                break;
-                            }
-                    }
-                    command = Console.ReadLine();
-                }
             }
             #region Method
             void StartServer()
@@ -91,21 +68,26 @@ namespace ApiHost.Spider
                 if (apiServer == null)
                 {
                     apiServer = new ApiServer(HostAddress);
-                    apiServer.DataReceived += ApiServer_DataReceived; //+= (s, e) => { OnLog(e.Item2.ToString()); };
+                    apiServer.DataReceived += ApiServer_DataReceived;
                 }
-                apiServer.Start();
+                apiServer.Start<ApiHost.Host.StartUp>();
             }
 
             void ReStartNetProcess()
             {
-                StartServer();
-                if (netProcess != null)
+                string[] execs = new string[]
                 {
-                    netProcess.Kill();
-                    netProcess.Dispose();
-                    netProcess = null;
+                    "--disable-web-security --user-data-dir=C:\\Users\\James.lin\\Desktop\\Spider https://www.bet365.com/#/IP/B13",
+                    "--disable-web-security --user-data-dir=C:\\Users\\James.lin\\Desktop\\Spider2 https://www.bet365.com/#/IP/B92",
+                    "--disable-web-security --user-data-dir=C:\\Users\\James.lin\\Desktop\\Spider3 https://www.bet365.com/#/IP/B66"
+                };
+                foreach (var each in execs)
+                {
+                    var url = each.Split(' ')[each.Split(' ').Length - 1];
+                    var processList = Process.GetProcessesByName("chrome");
+                    if (!processList.Any(a => a.MainWindowTitle.EndsWith(url)))
+                        Execute("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", each, IsConsole: false);
                 }
-
             }
 
             Process Execute(string exeFile, string argument = "", Action<string> outputCallback = null, Action<string> errorCallback = null, bool IsConsole = true)
@@ -170,8 +152,8 @@ namespace ApiHost.Spider
             {
                 foreach (var each in dicSpidernets.Where(f => f.Value < DateTime.Now.AddSeconds(-refreshRate)))
                 {
-                    var List = Process.GetProcessesByName("chrome");
-                    foreach (Process p in List)
+                    var processList = Process.GetProcessesByName("chrome");
+                    foreach (Process p in processList)
                     {
                         if (p.MainWindowTitle != "" && p.MainWindowTitle.Contains(each.Key))
                         {
@@ -186,8 +168,8 @@ namespace ApiHost.Spider
 
             private void ApiServer_DataReceived(object sender, Tuple<string, string, object> e)
             {
-                if(e.Item3 is string strData)
-                OnLog(strData);
+                if (e.Item3 is string strData)
+                    OnLog(strData);
             }
 
             public void OnLog(string log)

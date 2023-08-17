@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ApiHost.Host
 {
-    public class ApiServer
+    public class ApiServer:IDisposable
     {
         static HostProvider apiHost = null;
 
@@ -31,7 +31,7 @@ namespace ApiHost.Host
             DataReceived?.Invoke(null, new Tuple<string, string, object>(controller, action, data));
         }
 
-        public void Start()
+        public void Start<TStartUp>()
         {
             if (apiHost == null)
             {
@@ -43,7 +43,7 @@ namespace ApiHost.Host
                     Debug.WriteLine($"HostStatusChanged {e} {DateTime.Now}");
                 };
             }
-            apiHost.Start();
+            apiHost.Start<TStartUp>();
         }
         public void Stop()
         {
@@ -53,6 +53,11 @@ namespace ApiHost.Host
             apiHost = null;
             HostStatus = HostStatus.HostStopped;
             GC.Collect();
+        }
+
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }
