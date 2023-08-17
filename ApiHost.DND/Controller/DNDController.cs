@@ -15,10 +15,10 @@ namespace ApiHost.DND.Controller
     public class DNDController : ApiController
     {
         ILogger _logger;
-        ITerriarService _terriarService;
+        ITerrariaService _terriarService;
         IMapper _mapper;
 
-        public DNDController(ILogger logger, ITerriarService terriarService, IMapper mapper)
+        public DNDController(ILogger logger, ITerrariaService terriarService, IMapper mapper)
         {
             _logger = logger;
             _terriarService = terriarService;
@@ -35,15 +35,35 @@ namespace ApiHost.DND.Controller
         public IHttpActionResult GetCreatures()
         {
             //return Ok();
-            return Json(_terriarService.GetCreatures());
+            return Json(_mapper.Map<IEnumerable<CreatureRequest>>(_terriarService.GetCreatures()));
         }
 
         [HttpPost]
-        public IHttpActionResult Action(ActionRequest queyr)
+        public IHttpActionResult NewCreatures(CreatureRequest request)
         {
-            var result = _terriarService.Action(queyr.action, queyr.source, queyr.target);
+            if (request != null)
+                _terriarService.AddCreature(request);
+            else
+                _terriarService.AddCreature(new CreatureRequest("NewCharcater"));
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public IHttpActionResult Action(ActionRequest request)
+        {
+            var result = _terriarService.Action(request.skill, request.source, request.target);
             var response = _mapper.Map<CreatureRequest>(result);
             return Json(response);
+        }
+
+        [HttpPost]
+        public IHttpActionResult GetSkills(SkillsRequest request)
+        {
+            if (request != null && request.ids.Any())
+                return Json(SkillPool.Instance.Skills.Where(x => request.ids.Contains(x.ID)));
+            else
+                return Json(SkillPool.Instance.Skills);
         }
     }
 }

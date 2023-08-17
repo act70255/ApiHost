@@ -12,9 +12,9 @@ namespace ApiHost.DND.Model
         {
             ID = id;
             Name = name;
-            Action = action;
-            Element = element;
-            Effect = effect;
+            ActionType = action;
+            ElementType = element;
+            EffectType = effect;
             ManaCost = manaCost;
             StaminaCost = staminaCost;
             SkillRange = skillRange;
@@ -25,9 +25,9 @@ namespace ApiHost.DND.Model
             MaxValue = maxValue;
         }
 
-        public ActionType Action { get; set; }
-        public ElementType Element { get; set; }
-        public EffectType Effect { get; set; }
+        public ActionType ActionType { get; set; }
+        public ElementType ElementType { get; set; }
+        public EffectType EffectType { get; set; }
         public int ManaCost { get; set; }
         public int StaminaCost { get; set; }
         public int SkillRange { get; set; }

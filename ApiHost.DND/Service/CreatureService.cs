@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
+using ApiHost.DND.Service.Interface;
 
 namespace ApiHost.DND.Service
 {
-    public class CreatureService
+    public class CreatureService:ICreatureService
     {
         public void AddExperience(Creature source, int value)
         {
@@ -22,54 +23,62 @@ namespace ApiHost.DND.Service
                 source.Experience.Value = 0;
             }
         }
-        public Creature Action(ActionType actionType, Creature source, Creature target)
+        //public Creature Action(ActionType actionType, Creature source, Creature target)
+        //{
+        //    switch (actionType)
+        //    {
+        //        case ActionType.Attack:
+        //            return Attack(source,target);
+        //        case ActionType.Heal:
+        //            return Heal(source,target);
+        //        default:
+        //            return target;
+        //    }
+        //}
+
+        public Creature Spell(Skill skill, Creature source, Creature target)
         {
-            switch (actionType)
+            switch (skill.EffectType)
             {
-                case ActionType.Attack:
-                    return Attack(source,target);
-                case ActionType.Heal:
-                    return Heal(source,target);
+                //case EffectType.Damage:
+                //    return Attack(source, target);
+                case EffectType.Heal:
+                    return Heal(skill, source, target);
                 default:
                     return target;
             }
         }
 
-        public Creature Spell(int skillID Creature source, Creature target)
-        {
-            return target;
-        }
+        //public Creature Attack(Creature source, Creature target)
+        //{
+        //    var attack = RollEffect(source.AttackBonus.Value, 20 - source.Strength.Value);
+        //    if (source.Damage.Value >= target.ArmorClass.Value)
+        //    {
+        //        var damage = RollEffect(source.Damage.Value, source.Dexterity.Value - target.Dexterity.Value) + RollEffect(source.AttackBonus.Value);
+        //        var armor = RollEffect(target.ArmorClass.Value);
+        //        var hurt = damage - armor;
+        //        Console.WriteLine($"{source.Name} attacks {target.Name} {target.Health.Value}/{target.Health.MaxValue} for {hurt}.");
+        //        if (hurt > 0)
+        //            target.Health.Sub(hurt);
+        //    }
+        //    return target;
+        //}
 
-        public Creature Attack(Creature source, Creature target)
+        public Creature Heal(Skill skill, Creature source, Creature target)
         {
-            var attack = RollEffect(source.AttackBonus.Value, 20 - source.Strength.Value);
-            if (source.Damage.Value >= target.ArmorClass.Value)
-            {
-                var damage = RollEffect(source.Damage.Value, source.Dexterity.Value - target.Dexterity.Value) + RollEffect(source.AttackBonus.Value);
-                var armor = RollEffect(target.ArmorClass.Value);
-                var hurt = damage - armor;
-                Console.WriteLine($"{source.Name} attacks {target.Name} {target.Health.Value}/{target.Health.MaxValue} for {hurt}.");
-                if (hurt > 0)
-                    target.Health.Sub(hurt);
-            }
-            return target;
-        }
-
-        public Creature Heal(Creature source, Creature target)
-        {
-            var heal = RollEffect(source.Intelligence.Value / 2, 3);
+            var heal = RollEffect(skill);
             Console.WriteLine($"{source.Name} heals {target.Name} {target.Health.Value}/{target.Health.MaxValue} for {heal}.");
             target.Health.Add(heal);
             return target;
         }
 
-        public int RollEffect(int rollValue, int rollChance = -1)
+        public int RollEffect(Skill skill)
         {
-            if (rollChance > 0 && Dice.Roll() < rollChance)
-            {
-                return 0;
-            }
-            return Dice.Roll(rollValue);
+            //if (rollChance > 0 && Dice.Roll() < rollChance)
+            //{
+            //    return 0;
+            //}
+            return Dice.Roll(skill.MaxValue, skill.Value);
         }
     }
 }

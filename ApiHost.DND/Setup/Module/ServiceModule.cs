@@ -13,9 +13,8 @@ namespace ApiHost.DND.Setup.Module
         {
             builder.Register(c => new Service.Logger()).As<Service.Interface.ILogger>().InstancePerRequest();
 
-            builder.RegisterType<Service.TerriarService>().As<Service.Interface.ITerriarService>().InstancePerRequest();
-
-            
+            builder.RegisterType<Service.TerrariaService>().As<Service.Interface.ITerrariaService>().InstancePerRequest();
+            builder.RegisterType<Service.CreatureService>().As<Service.Interface.ICreatureService>().InstancePerRequest();
         }
     }
 }

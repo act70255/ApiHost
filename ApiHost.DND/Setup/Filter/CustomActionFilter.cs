@@ -35,7 +35,7 @@ namespace ApiHost.DND.Controller.Filter
                 return Task.FromResult(0);
             }
 
-            var data = actionExecutedContext.Response.Content.ReadAsAsync<object>().GetAwaiter().GetResult();
+            var data = actionExecutedContext.Response.Content?.ReadAsAsync<object>().GetAwaiter().GetResult();
             Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(data));
             var result = new
             {
