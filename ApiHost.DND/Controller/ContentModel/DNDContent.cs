@@ -1,22 +1,21 @@
-﻿using ApiHost.DND.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Controller
+namespace ApiHost.DNDHost.Controller
 {
     public class ActionRequest : BaseMessageContent
     {
-        public int source { get; set; }
-        public int target { get; set; }
-        public int skill { get; set; }
+        public int Source { get; set; }
+        public int Target { get; set; }
+        public int Skill { get; set; }
     }
     public class SkillsRequest : BaseMessageContent
     {
-        public int id { get; set; }
-        public List<int> ids { get; set; }
+        public int ID { get; set; }
+        public List<int> IDs { get; set; }
     }
 
     public class CreatureRequest : BaseMessageContent
@@ -40,7 +39,7 @@ namespace ApiHost.DND.Controller
             Skills = skills;
         }
         public int ID { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; } = $"AutoName_{DateTime.Now.Ticks}";
         public int HealthValue { get; set; }
         public int ManaValue { get; set; }
         public int StaminaValue { get; set; }

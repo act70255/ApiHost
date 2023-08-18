@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace ApiHost.DND.Setup.Module
+namespace ApiHost.DNDHost.Setup.Module
 {
     public class ControllerModule: Autofac.Module
     {

@@ -7,7 +7,7 @@ using System.Configuration;
 using System.Reflection;
 using System.Web.Http;
 
-namespace ApiHost.DND
+namespace ApiHost.DNDHost
 {
     public class Startup
     {
@@ -26,7 +26,7 @@ namespace ApiHost.DND
             builder.RegisterModule(new Setup.Module.ControllerModule());
 
             //Register service
-            builder.RegisterModule(new Setup.Module.ServiceModule());
+            builder.RegisterModule(new DND.Domain.ServiceModule());
 
             //Register AutoMapper
             builder.RegisterModule(new Setup.Module.AutoMapperModule());

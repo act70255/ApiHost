@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Model
+namespace DND.Model
 {
     public class Creature : BaseElement
     {

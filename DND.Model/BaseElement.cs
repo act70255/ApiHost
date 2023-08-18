@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Model
+namespace DND.Model
 {
     public enum ActionType
     {

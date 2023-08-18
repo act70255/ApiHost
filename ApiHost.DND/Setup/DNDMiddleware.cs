@@ -1,4 +1,4 @@
-﻿using ApiHost.DND.Service.Interface;
+﻿using DND.Domain.Service.Interface;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace ApiHost.DND
+namespace ApiHost.DNDHost
 {
     public class DNDMiddleware : OwinMiddleware
     {

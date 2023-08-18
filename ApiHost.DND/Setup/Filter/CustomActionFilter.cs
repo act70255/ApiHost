@@ -1,5 +1,5 @@
-﻿using ApiHost.DND.Service.Interface;
-using Autofac.Integration.WebApi;
+﻿using Autofac.Integration.WebApi;
+using DND.Domain.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
-namespace ApiHost.DND.Controller.Filter
+namespace ApiHost.DNDHost.Controller.Filter
 {
     public class ResultActionFilter : IAutofacActionFilter
     {

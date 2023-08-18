@@ -1,12 +1,13 @@
 ﻿using Autofac;
 using AutoMapper;
+using DND.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Setup.Module
+namespace ApiHost.DNDHost.Setup.Module
 {
     public class AutoMapperModule : Autofac.Module
     {
@@ -35,7 +36,7 @@ namespace ApiHost.DND.Setup.Module
     {
         public AutoMapperProfile()
         {
-            CreateMap<Model.Creature, Controller.CreatureRequest>()
+            CreateMap<Creature, Controller.CreatureRequest>()
                 //.ForMember(request => request.Name, opt => opt.MapFrom(Model => Model.Name))
                 //.ForMember(request => request.HealthValue, opt => opt.MapFrom(Model => Model.Health.Value))
                 //.ForMember(request => request.ManaValue, opt => opt.MapFrom(Model => Model.Mana.Value))

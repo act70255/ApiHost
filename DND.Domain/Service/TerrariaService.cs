@@ -1,14 +1,14 @@
-﻿using ApiHost.DND.Controller;
-using ApiHost.DND.Model;
-using ApiHost.DND.Service.Interface;
+﻿using DND.Model;
+using DND.Domain.Service.Interface;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DND.Repository;
 
-namespace ApiHost.DND.Service
+namespace DND.Domain.Service
 {
     public class TerrariaService : ITerrariaService
     {
@@ -26,11 +26,10 @@ namespace ApiHost.DND.Service
             return Terraria.Instance.Creatures;
         }
 
-        public Creature AddCreature(CreatureRequest request)
+        public Creature AddCreature(Creature request)
         {
-            var creature = _mapper.Map<Creature>(request);
-            Terraria.Instance.NewCreature(creature);
-            return creature;
+            Terraria.Instance.NewCreature(request);
+            return request;
         }
     }
 }

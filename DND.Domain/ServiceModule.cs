@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Setup.Module
+namespace DND.Domain
 {
     public class ServiceModule : Autofac.Module
     {

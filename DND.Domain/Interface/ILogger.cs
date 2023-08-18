@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Service.Interface
+namespace DND.Domain.Service.Interface
 {
     public interface ILogger
     {

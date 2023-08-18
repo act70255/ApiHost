@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND
+namespace ApiHost.DNDHost
 {
     internal class Program
     {

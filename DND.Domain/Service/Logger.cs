@@ -1,4 +1,4 @@
-﻿using ApiHost.DND.Service.Interface;
+﻿using DND.Domain.Service.Interface;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiHost.DND.Service
+namespace DND.Domain.Service
 {
     public class Logger : ILogger
     {
