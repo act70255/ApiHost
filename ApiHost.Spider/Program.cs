@@ -162,6 +162,10 @@ namespace ApiHost.Spider
                             PostMessage(p.MainWindowHandle, 0x100, 0x74, 0);
                             dicSpidernets[each.Key] = DateTime.Now;
                         }
+                        else
+                        {
+                            dicSpidernets.Remove(each.Key);
+                        }
                     }
                 }
             }

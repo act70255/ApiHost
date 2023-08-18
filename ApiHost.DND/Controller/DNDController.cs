@@ -72,7 +72,7 @@ namespace ApiHost.DNDHost.Controller
         {
             try
             {
-                var result = _creatureService.Spell(request.Skill, request.Source, request.Target);
+                var result = _terrariaService.Spell(request.Skill, request.Source, request.Target);
                 var response = _mapper.Map<CreatureRequest>(result);
                 return Json(response);
             }

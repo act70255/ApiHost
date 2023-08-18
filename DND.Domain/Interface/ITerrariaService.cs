@@ -9,7 +9,8 @@ namespace DND.Domain.Service.Interface
 {
     public interface ITerrariaService
     {
-        List<Creature> GetCreatures();
+        IEnumerable<Creature> GetCreatures();
         Creature AddCreature(Creature request);
+        Creature Spell(int skill, int name, int target);
     }
 }

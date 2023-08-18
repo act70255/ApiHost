@@ -7,34 +7,21 @@ using System.Threading.Tasks;
 
 namespace DND.Repository
 {
-    public sealed class Dice
-    {
-        private static readonly Lazy<Dice> lazy = new Lazy<Dice>(() => new Dice());
-        public static Dice Instance { get { return lazy.Value; } }
-        private static readonly Random random = new Random();
-        private static readonly object syncLock = new object();
-        public static int Roll(int sides = 20,int start = 0)
-        {
-            lock (syncLock)
-            {
-                return random.Next(start + 1, sides + 1);
-            }
-        }
-    }
-    public sealed class SkillPool
+    public sealed class SkillPool : BaseRepository
     {
         private static readonly Lazy<SkillPool> lazy = new Lazy<SkillPool>(() => new SkillPool());
         public static SkillPool Instance { get { return lazy.Value; } }
-        List<Skill> _skills { get; set; } = new List<Skill>();
 
-        public List<Skill> Skills => _skills;
+        public IEnumerable<Skill> Skills => GetList<Skill>();
 
         SkillPool()
         {
-            _skills.AddRange(GeneratePhysicalSkills());
-            _skills.AddRange(GenerateFireSkills());
-            _skills.AddRange(GenerateWaterSkills());
-            _skills.AddRange(GenerateHealSkills());
+            var skillList = new List<Skill>();
+            InsertRange<Skill>(GeneratePhysicalSkills());
+            InsertRange<Skill>(GenerateFireSkills());
+            InsertRange<Skill>(GenerateWaterSkills());
+            InsertRange<Skill>(GenerateHealSkills());
+            //SaveSkills(skillList);
             //Skills.AddRange(GenerateBuffSkills());
             //Skills.AddRange(GenerateDebuffSkills());
         }
@@ -73,34 +60,6 @@ namespace DND.Repository
                 new Skill (32,"GroupHeal",ActionType.Heal, ElementType.Light, EffectType.Heal, 5, 0, 18, true, 4, true, 4, 8),
                 new Skill (33,"GreatHeal", ActionType.Heal, ElementType.Light, EffectType.Heal, 6, 0, 18, false, 10, true, 7, 17),
             };
-        }
-    }
-
-    public sealed class Terraria
-    {
-        private static readonly Lazy<Terraria> lazy = new Lazy<Terraria>(() => new Terraria());
-        public static Terraria Instance { get { return lazy.Value; } }
-
-        List<Creature> creatures { get; set; } = new List<Creature>();
-
-        public List<Creature> Creatures => creatures;
-
-        public Creature NewCreature(string name, int health = 10, int mana = 10, int stamina = 10, int experience = 20, int level = 10, int armorClass = 10, int attackBonus = 10, int damage = 10, int strength = 10, int dexterity = 10, int intelligence = 10, int charisma = 10)
-        {
-            var newID = creatures.Max(m => m.ID) + 1;
-            var creature = new Creature(newID, name, health, mana, stamina, experience, level, armorClass, attackBonus, damage, strength, dexterity, intelligence, charisma);
-            creatures.Add(creature);
-            return creature;
-        }
-        public Creature NewCreature(Creature creature)
-        {
-            creature.ID = creatures.Any() ? creatures.Max(m => m.ID) + 1 : 0;
-            creatures.Add(creature);
-            return creature;
-        }
-        public void Clear()
-        {
-            creatures.Clear();
         }
     }
 }

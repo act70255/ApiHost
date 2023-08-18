@@ -42,6 +42,6 @@ namespace DND.Model
         public StatusValue Dexterity { get; set; }
         public StatusValue Intelligence { get; set; }
         public StatusValue Charisma { get; set; }
-        public List<int> Skills { get; set; } = new List<int>();
+        public int[] Skills { get; set; } = new int[0];
     }
 }

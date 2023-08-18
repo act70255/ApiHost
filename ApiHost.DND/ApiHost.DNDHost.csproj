@@ -150,7 +150,6 @@
     <Compile Include="Setup\Module\AutoMapperModule.cs" />
     <Compile Include="Setup\Module\ControllerModule.cs" />
     <Compile Include="Setup\Startup.cs" />
-    <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -171,6 +170,10 @@
     <ProjectReference Include="..\DND.Model\DND.Model.csproj">
       <Project>{e7a12e7d-6d63-4d49-a117-e624027b93a6}</Project>
       <Name>DND.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DND.Repository\DND.Repository.csproj">
+      <Project>{8094F4F8-375E-4334-A080-9173856164DA}</Project>
+      <Name>DND.Repository</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
