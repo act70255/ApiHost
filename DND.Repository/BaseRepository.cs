@@ -34,8 +34,10 @@ namespace DND.Repository
         public void InsertRange<T>(IEnumerable<T> list)
         {
             var result = GetList<T>().ToList();
+
             var resultJson = JsonConvert.SerializeObject(result);
-            result.AddRange(list.Where(f=> !resultJson.Contains(JsonConvert.SerializeObject(f))));
+            result.AddRange(list.Where(f => !resultJson.Contains(JsonConvert.SerializeObject(f))));
+
             Save(result);
         }
 
