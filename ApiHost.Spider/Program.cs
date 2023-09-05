@@ -77,9 +77,6 @@ namespace ApiHost.Spider
             {
                 string[] execs = new string[]
                 {
-                    "--disable-web-security --user-data-dir=C:\\Users\\James.lin\\Desktop\\Spider https://www.bet365.com/#/IP/B13",
-                    "--disable-web-security --user-data-dir=C:\\Users\\James.lin\\Desktop\\Spider2 https://www.bet365.com/#/IP/B92",
-                    "--disable-web-security --user-data-dir=C:\\Users\\James.lin\\Desktop\\Spider3 https://www.bet365.com/#/IP/B66"
                 };
                 foreach (var each in execs)
                 {
