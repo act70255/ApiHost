@@ -1,34 +1,28 @@
 ﻿using ApiHost.Host;
+using ApiHost.Spider.Helper;
+using ApiHost.Spider.Model;
 using Newtonsoft.Json;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Xml.Linq;
+using UIAutomationClient;
 
 namespace ApiHost.Spider
 {
     internal class Program
     {
-        [DllImport("USER32.DLL", CharSet = CharSet.Unicode)]
-        public static extern IntPtr FindWindow(String lpClassName, String lpWindowName);
-
-        [DllImport("USER32.DLL")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("User32.Dll", EntryPoint = "PostMessageA")]
-        private static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
-
         static void Main(string[] args)
         {
-            string Port() => ConfigurationSettings.AppSettings["HostPort"];
-            string IPAddress() => ConfigurationSettings.AppSettings["HostIP"];
-            string HostAddress() => $"{IPAddress()}:{Port()}/";
-
             HostMessaging.Instance.DataReceived += (s, e) =>
             {
                 Console.WriteLine($"DataReceived {DateTime.Now.ToString("MM/dd HH:mm")} [{e.Item1}/{e.Item2}] {JsonConvert.SerializeObject(e.Item3)}");
@@ -36,29 +30,27 @@ namespace ApiHost.Spider
             new StartUp();
         }
 
-        public class StartUp
+        class StartUp
         {
             #region Members
             ApiServer apiServer = null;
-            DateTime lastUpdate = DateTime.Now;
-            int refreshRate = 30;
-            Process netProcess;
-            Dictionary<string, DateTime> dicSpidernets = new Dictionary<string, DateTime>();
+            Dictionary<string, DateTime> dicSpidernets { get; set; } = new Dictionary<string, DateTime>();
+
             string Port => ConfigurationSettings.AppSettings["HostPort"];
             string IPAddress => ConfigurationSettings.AppSettings["HostIP"];
             string HostAddress => $"{IPAddress}:{Port}/";
-            Timer _timer;
+            public List<SpiderRecord> SpiderList { get; }
+            int RefreshRate => int.Parse(ConfigurationSettings.AppSettings["RefreshRate"]);
             #endregion
 
             public StartUp()
             {
-                _timer = new Timer(1000);
-                _timer.Elapsed += _timer_Elapsed;
-                _timer.AutoReset = true; // repeat forever
-                _timer.Enabled = true;
+                SpiderList = ConfigurationSettings.AppSettings.AllKeys.Where(f => f.StartsWith("Spider_"))
+                    .Select(s => new SpiderRecord(ConfigurationSettings.AppSettings[s])).ToList();
 
-                StartServer();
-                ReStartNetProcess();
+                //StartServer();
+                SpiderPolling();
+
 
                 var command = Console.ReadLine();
             }
@@ -73,17 +65,45 @@ namespace ApiHost.Spider
                 apiServer.Start<ApiHost.Host.StartUp>();
             }
 
-            void ReStartNetProcess()
+            async Task SpiderPolling()
             {
-                string[] execs = new string[]
+                while (true)
                 {
-                };
-                foreach (var each in execs)
-                {
-                    var url = each.Split(' ')[each.Split(' ').Length - 1];
-                    var processList = Process.GetProcessesByName("chrome");
-                    if (!processList.Any(a => a.MainWindowTitle.EndsWith(url)))
-                        Execute("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", each, IsConsole: false);
+                    var chromeList = Process.GetProcessesByName("chrome").Where(f => !string.IsNullOrEmpty(f.MainWindowTitle)); ;
+                    var existSpider = chromeList.Select(s => new { Process = s, Url = ChromeHelper.Instance.GetChromeUrl(s) }).ToList();
+                    int position = 5;
+                    foreach (var each in SpiderList)
+                    {
+                        if (!existSpider.Any(a => each.PureUrl.Contains(a.Url)))
+                        {
+                            Debug.WriteLine($"[Add] {each.Url}");
+                            each.Time = DateTime.Now;
+                            Execute("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe", $"{ConfigurationSettings.AppSettings["SpiderPrefix"]} {each.FullParam}", IsConsole: false);
+                            //await Task.Delay(7000);
+                        }
+                        else if (existSpider.FirstOrDefault(f => each.PureUrl.Contains(f.Url))?.Process is Process process)
+                        {
+                            //ChromeHelper.Instance.SetProcessForeground(process.MainWindowHandle);
+
+                            if (each.IsExpired(RefreshRate))
+                            {
+                                try
+                                {
+                                    process.Kill();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.WriteLine(ex);
+                                }
+                                //each.Time = DateTime.Now;
+                                //ChromeHelper.Instance.WinPostMessage(process.MainWindowHandle, 0x100, 0x74, 0);
+                            }
+
+                            //ChromeHelper.Instance.SetWindowRect(process, position, position, 1200, 600, true);
+                            //position += 40;
+                        }
+                    }
+                    await Task.Delay(5000);
                 }
             }
 
@@ -99,7 +119,9 @@ namespace ApiHost.Spider
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     //不顯示任何視窗
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    //以管理者身分執行
+                    Verb = "runas",
                 };
                 Process p = new Process()
                 {
@@ -131,40 +153,6 @@ namespace ApiHost.Spider
                     p.WaitForExit();
 
                 return p;
-            }
-
-            public void SetProcessForeground(string title)
-            {
-                IntPtr handle = FindWindow(null, title);
-
-                if (handle == IntPtr.Zero)
-                {
-                    return;
-                }
-
-                SetForegroundWindow(handle);
-            }
-
-            private void _timer_Elapsed(object sender, ElapsedEventArgs e)
-            {
-                foreach (var each in dicSpidernets.Where(f => f.Value < DateTime.Now.AddSeconds(-refreshRate)))
-                {
-                    var processList = Process.GetProcessesByName("chrome");
-                    foreach (Process p in processList)
-                    {
-                        if (p.MainWindowTitle != "" && p.MainWindowTitle.Contains(each.Key))
-                        {
-                            Debug.WriteLine($"[Refresh] {p.MainWindowTitle}");
-                            SetProcessForeground(p.MainWindowTitle);
-                            PostMessage(p.MainWindowHandle, 0x100, 0x74, 0);
-                            dicSpidernets[each.Key] = DateTime.Now;
-                        }
-                        else
-                        {
-                            dicSpidernets.Remove(each.Key);
-                        }
-                    }
-                }
             }
 
             private void ApiServer_DataReceived(object sender, Tuple<string, string, object> e)
